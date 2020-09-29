@@ -1,0 +1,9 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t doo7a/docker-react -f Dockerfile.dev .
+
+  # -- --coverage will make the npm run test exits and get the result of exit(0) or exit(1), because the default behaviour of npm run test is to stay in the test menu waiting user to press w, q, p or enter
+script:
+  - docker run doo7a/docker-react npm run test -- --coverage
