@@ -7,3 +7,16 @@ before_install:
   # -- --coverage will make the npm run test exits and get the result of exit(0) or exit(1), because the default behaviour of npm run test is to stay in the test menu waiting user to press w, q, p or enter
 script:
   - docker run doo7a/docker-react npm run test -- --coverage
+
+  deploy:
+    provider: elasticbeanstalk #a service at aws that has a load balancer to route requests to the least crowded server
+    region: "us-west-2" #example of the region
+    app: "docker" #the name of the application on elasticbeanstalk service
+    env: "Docker-env" #the environment at elasticbean stalk we chose to deploy application 
+    bucket-name: "elasticbeanstalk-us-west-2-306476627547"
+    bucket-path: "docker" # bucket path is the folder at S3 cloud storage that will contain our app. at first it's not created so we specify the name of our app to it and travis-ci will zip our application into one folder named 'docker' for example
+    on: # only deploy when
+      branch:master # a branch merges the code to master branch
+    access_key_id: $AWS_ACCESS_KEY # this is an enviornment variable that's created at travis-ci, on IAM at AWS we specified a user that can deploy the application and has full access elasticbeanstalk and there we are given two keys to the application
+    secret_access_key:
+      secure: "$AWS_SECRET_KEY"
